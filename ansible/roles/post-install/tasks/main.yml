@@ -1,0 +1,22 @@
+---
+# defaults file for post-install
+[ec2-user@ip-172-31-1-131 post-install]$ cd tasks/
+[ec2-user@ip-172-31-1-131 tasks]$ cat main.yml 
+- name: Install NGINX on Debian/Ubuntu
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+  when: ansible_facts.pkg_mgr == "apt"
+
+- name: Install NGINX on RedHat/Amazon Linux
+  yum:
+    name: nginx
+    state: present
+  when: ansible_facts.pkg_mgr == "yum" or ansible_facts.pkg_mgr == "dnf"
+
+- name: Start and enable NGINX
+  service:
+    name: nginx
+    state: started
+    enabled: yes
