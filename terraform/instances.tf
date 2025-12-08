@@ -65,7 +65,7 @@ resource "aws_ec2_instance_state" "ansible_python_api-state" {
 
 # MariaDB
 resource "aws_instance" "mariadb" {
-  ami                    = data.aws_ami.centos9.id
+  ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = var.instanceType
   key_name               = aws_key_pair.client_keypair.key_name
   vpc_security_group_ids = [aws_security_group.mariadb_sg.id]
@@ -74,7 +74,7 @@ resource "aws_instance" "mariadb" {
   tags = {
     Name    = "${var.projectName}-mariadb"
     Project = var.projectName
-    os = "centos"
+    os = "amazonlinux"
   }
 }
 

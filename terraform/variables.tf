@@ -23,6 +23,5 @@ variable "ansible_user_by_os" {
   default = {
     ubuntu       = "ubuntu"
     amazonlinux  = "ec2-user"
-    centos       = "centos"
   }
 }
