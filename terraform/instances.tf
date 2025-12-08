@@ -13,6 +13,7 @@ resource "aws_instance" "ansible_ec2" {
   tags = {
     Name    = "${var.projectName}"
     Project = var.projectName
+    os = "ubuntu"
   }
 }
 
@@ -32,6 +33,7 @@ resource "aws_instance" "nginx_ec2" {
   tags = {
     Name    = "${var.projectName}-nginx"
     Project = var.projectName
+    os = "amazonlinux"
   }
 }
 
@@ -51,6 +53,7 @@ resource "aws_instance" "python_api" {
   tags = {
     Name    = "${var.projectName}-python"
     Project = var.projectName
+    os = "ubuntu"
   }
 }
 
@@ -71,6 +74,7 @@ resource "aws_instance" "mariadb" {
   tags = {
     Name    = "${var.projectName}-mariadb"
     Project = var.projectName
+    os = "centos"
   }
 }
 

@@ -14,12 +14,12 @@ resource "tls_private_key" "client_key" {
 }
 
 resource "aws_key_pair" "client_keypair" {
-  key_name   = "client-key"
+  key_name   = "${var.projectName}_client-key"
   public_key = tls_private_key.client_key.public_key_openssh
 }
 
 resource "local_file" "client_private_key" {
-  filename = "${path.module}/client-key.pem"
+  filename = "${path.module}/${aws_key_pair.client_keypair.key_name}.pem"
   content  = tls_private_key.client_key.private_key_pem
   file_permission = "0400"
 }

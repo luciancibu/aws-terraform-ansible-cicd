@@ -17,3 +17,12 @@ variable "my_ip" {
 variable "instanceType" {
   default = "t3.micro"
 }
+
+variable "ansible_user_by_os" {
+  type        = map(string)
+  default = {
+    ubuntu       = "ubuntu"
+    amazonlinux  = "ec2-user"
+    centos       = "centos"
+  }
+}
