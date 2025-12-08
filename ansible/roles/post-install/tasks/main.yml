@@ -1,7 +1,3 @@
----
-# defaults file for post-install
-[ec2-user@ip-172-31-1-131 post-install]$ cd tasks/
-[ec2-user@ip-172-31-1-131 tasks]$ cat main.yml 
 - name: Install NGINX on Debian/Ubuntu
   apt:
     name: nginx
