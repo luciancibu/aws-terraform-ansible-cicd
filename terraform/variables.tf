@@ -22,6 +22,7 @@ variable "ansible_user_by_os" {
   type        = map(string)
   default = {
     ubuntu       = "ubuntu"
-    amazonlinux  = "ec2-user"
+    debian       = "admin"
+    redhat       = "ec2-user"
   }
 }
