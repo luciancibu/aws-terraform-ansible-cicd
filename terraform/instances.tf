@@ -16,6 +16,16 @@ resource "aws_instance" "ansible_ec2" {
   delete_on_termination = true
   }
 
+  user_data = <<-EOF
+  #!/bin/bash
+  set -xe
+
+  dnf update -y
+  dnf install -y nano vim git zip unzip python3 python3-pip
+  pip3 install --no-cache-dir ansible
+
+  EOF
+
   tags = {
     Name    = "${var.projectName}"
     Project = var.projectName
