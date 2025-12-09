@@ -25,4 +25,10 @@
     mode: '0644'
   loop:
     - index.html
-    - style.css    
+    - style.css
+
+- name: Enable and start nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes    
