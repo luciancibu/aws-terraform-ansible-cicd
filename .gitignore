@@ -1,4 +1,3 @@
-ReadMe.md
 _tests
 terraform/.terraform/
 terraform/terraform.tfstate
