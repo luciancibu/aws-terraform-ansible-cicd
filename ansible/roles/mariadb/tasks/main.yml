@@ -1,0 +1,14 @@
+---
+- name: Install MariaDB
+  apt:
+    name: mariadb-server
+    state: present
+    update_cache: yes
+
+- name: Install nano & vim on MariaDB server
+  apt:
+    name:
+      - nano
+      - vim
+    state: present
+    update_cache: yes    

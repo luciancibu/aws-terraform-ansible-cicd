@@ -19,7 +19,7 @@ resource "aws_key_pair" "client_keypair" {
 }
 
 resource "local_file" "client_private_key" {
-  filename = "${path.module}/${aws_key_pair.client_keypair.key_name}.pem"
+  filename = "${path.root}/../ansible/${aws_key_pair.client_keypair.key_name}.pem"
   content  = tls_private_key.client_key.private_key_pem
   file_permission = "0400"
 }

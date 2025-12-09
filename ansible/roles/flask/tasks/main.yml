@@ -1,0 +1,17 @@
+---
+- name: Install python & deps
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    update_cache: yes
+
+- name: Install nano & vim & netcat on Flask server
+  apt:
+    name:
+      - netcat-openbsd
+      - nano
+      - vim
+    state: present
+    
