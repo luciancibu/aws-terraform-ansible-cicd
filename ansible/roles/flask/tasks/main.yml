@@ -14,3 +14,11 @@
       - nano
       - vim
     state: present
+
+- name: Create virtualenv
+  command: python3 -m venv /opt/flaskenv
+  args:
+    creates: /opt/flaskenv
+
+- name: Install Flask
+  command: /opt/flaskenv/bin/pip install flask
