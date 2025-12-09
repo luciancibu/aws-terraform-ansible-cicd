@@ -27,8 +27,15 @@
     - index.html
     - style.css
 
+
+- name: Allow Nginx to connect to upstream servers (SELinux)
+  ansible.posix.seboolean:
+    name: httpd_can_network_connect
+    state: true
+    persistent: true
+
 - name: Enable and start nginx
   service:
     name: nginx
     state: started
-    enabled: yes    
+    enabled: yes
