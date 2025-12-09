@@ -17,7 +17,7 @@
       - nano
       - vim
     state: present
-    
+
 - name: Create virtualenv
   command: python3 -m venv /opt/flaskenv
   args:
@@ -25,14 +25,17 @@
 
 - name: Install Flask
   command: /opt/flaskenv/bin/pip install flask
+  notify: Restart Flask
 
 - name: Install MariaDB Python driver
   command: /opt/flaskenv/bin/pip install mariadb
+  notify: Restart Flask
 
 - name: Deploy Flask app from template
   template:
     src: app.py.j2
     dest: /root/app.py
+  notify: Restart Flask
 
 - name: Create systemd service
   copy:
@@ -50,16 +53,11 @@
 
       [Install]
       WantedBy=multi-user.target
-
-- name: Reload systemd
-  command: systemctl daemon-reexec
+  notify:
+    - Reload systemd
+    - Restart Flask
 
 - name: Enable Flask
   systemd:
     name: flask
     enabled: yes
-
-- name: Start Flask
-  systemd:
-    name: flask
-    state: restarted
