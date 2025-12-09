@@ -1,0 +1,22 @@
+- name: Install MariaDB
+  apt:
+    name: mariadb-server
+    update_cache: yes
+
+- name: Start MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Create database & table
+  shell: |
+    mysql -e "
+    CREATE DATABASE IF NOT EXISTS cv;
+    CREATE USER IF NOT EXISTS 'cvuser'@'%' IDENTIFIED BY 'cvpass';
+    GRANT ALL PRIVILEGES ON cv.* TO 'cvuser'@'%';
+    FLUSH PRIVILEGES;
+    USE cv;
+    CREATE TABLE IF NOT EXISTS counter (id INT PRIMARY KEY, views INT);
+    INSERT IGNORE INTO counter VALUES (1,0);
+    "
