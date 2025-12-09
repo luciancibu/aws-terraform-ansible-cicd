@@ -13,4 +13,4 @@ terraform/*.pem
 terraform/*.tfstate
 ansible/inventory
 *.zip
-*.zip
+*.pem

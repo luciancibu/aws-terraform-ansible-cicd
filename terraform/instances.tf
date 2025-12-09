@@ -21,7 +21,7 @@ resource "aws_instance" "ansible_ec2" {
   set -xe
 
   dnf update -y
-  dnf install -y nano vim git zip unzip python3 python3-pip
+  dnf install -y tree nano vim git zip unzip python3 python3-pip
   pip3 install --no-cache-dir ansible
 
   EOF

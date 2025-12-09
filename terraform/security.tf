@@ -47,26 +47,10 @@ resource "aws_security_group" "nginx_sg" {
   }
 
   ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
     description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"]  //TODO: Remove it after testing
-  }
-
-  ingress {
-    description = "Allow All"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
   }
 
@@ -97,20 +81,12 @@ resource "aws_security_group" "python_sg" {
     protocol        = "tcp"
     cidr_blocks = ["${aws_instance.nginx_ec2.private_ip}/32"]
   }
-
+  
   ingress {
     description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"] //TODO: Remove it after testing
-  }
-  
-  ingress {
-    description = "Allow All"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
   }  
 
@@ -147,14 +123,6 @@ resource "aws_security_group" "mariadb_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ip}/32"] //TODO: Remove it after testing
-  }
-
-  ingress {
-    description = "Allow All"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
   }
 
