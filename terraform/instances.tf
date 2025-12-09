@@ -9,36 +9,18 @@ resource "aws_instance" "ansible_ec2" {
   key_name               = aws_key_pair.key_pairs_ansible.key_name
   vpc_security_group_ids = [aws_security_group.ansible_sg.id]
   availability_zone      = var.zone
+  
+  root_block_device {
+  volume_size = 30     
+  volume_type = "gp3"
+  delete_on_termination = true
+  }
 
   tags = {
     Name    = "${var.projectName}"
     Project = var.projectName
     os = "amazonlinux"
   }
-
-
-
-  
-  connection {
-      host        = self.public_ip
-      user        = "ubuntu"
-      private_key = file("C:/Users/Luci/.ssh/id_rsa")
-    }
-
-  # provisioner "file" {
-  #   source      = "${path.module}/ansible.zip"
-  #   destination = "/home/ubuntu/ansible.zip"
-  # }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update -y",
-      "sudo apt install -y unzip zip ansible",
-      # "unzip /home/ubuntu/ansible.zip -d /home/ubuntu/ansible",
-      # "cd /home/ubuntu/ansible",
-      # "ansible-playbook -i inventory playbook.yml"
-    ]
-  }  
 }
 
 data "archive_file" "ansible_zip" {

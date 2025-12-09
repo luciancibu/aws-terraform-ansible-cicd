@@ -10,6 +10,7 @@ terraform/*.backup
 terraform/*.tfvars
 terraform/*.ini
 terraform/*.pem
+terraform/*.tfstate
 ansible/inventory
 *.zip
 *.zip
