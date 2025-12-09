@@ -5,6 +5,9 @@
       - python3
       - python3-pip
       - python3-venv
+      - mariadb-client
+      - libmariadb-dev
+      - build-essential
     update_cache: yes
 
 - name: Install nano & vim & netcat on Flask server
@@ -14,7 +17,7 @@
       - nano
       - vim
     state: present
-
+    
 - name: Create virtualenv
   command: python3 -m venv /opt/flaskenv
   args:
@@ -22,3 +25,41 @@
 
 - name: Install Flask
   command: /opt/flaskenv/bin/pip install flask
+
+- name: Install MariaDB Python driver
+  command: /opt/flaskenv/bin/pip install mariadb
+
+- name: Deploy Flask app from template
+  template:
+    src: app.py.j2
+    dest: /root/app.py
+
+- name: Create systemd service
+  copy:
+    dest: /etc/systemd/system/flask.service
+    content: |
+      [Unit]
+      Description=Flask App
+      After=network.target
+
+      [Service]
+      User=root
+      WorkingDirectory=/root
+      ExecStart=/opt/flaskenv/bin/python /root/app.py
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Reload systemd
+  command: systemctl daemon-reexec
+
+- name: Enable Flask
+  systemd:
+    name: flask
+    enabled: yes
+
+- name: Start Flask
+  systemd:
+    name: flask
+    state: restarted

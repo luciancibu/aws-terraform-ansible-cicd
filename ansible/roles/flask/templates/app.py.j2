@@ -1,0 +1,45 @@
+from flask import Flask, request
+import mariadb
+import time
+
+app = Flask(__name__)
+
+def get_connection():
+    for _ in range(20):  # retry ~60 seconds
+        try:
+            return mariadb.connect(
+                user="{{ db_user }}",
+                password="{{ db_pass }}",
+                host="{{ hostvars['mariadb']['ansible_host'] }}",
+                port=3306,
+                database="{{ db_name }}",
+                connect_timeout=5
+            )
+        except mariadb.OperationalError:
+            time.sleep(3)
+
+    raise Exception("MariaDB is not reachable after multiple retries")
+
+@app.route("/view")
+def view_counter():
+    conn = get_connection()
+    cur = conn.cursor()
+
+    read = request.args.get("read")
+
+    if read == "true":
+        cur.execute("SELECT views FROM counter WHERE id=1")
+        result = cur.fetchone()
+        conn.close()
+        return str(result[0])
+
+    cur.execute("UPDATE counter SET views = views + 1 WHERE id=1")
+    conn.commit()
+
+    cur.execute("SELECT views FROM counter WHERE id=1")
+    result = cur.fetchone()
+    conn.close()
+
+    return str(result[0])
+
+app.run(host="0.0.0.0", port={{ flask_port }})
