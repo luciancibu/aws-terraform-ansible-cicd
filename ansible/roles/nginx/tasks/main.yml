@@ -10,3 +10,14 @@
       - nano
       - vim
     state: present
+
+- name: Copy index.html & style.css to Nginx html directory
+  copy:
+    src: "{{ item }}"
+    dest: "/usr/share/nginx/html/{{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - index.html
+    - style.css    

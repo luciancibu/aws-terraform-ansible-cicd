@@ -14,4 +14,3 @@
       - nano
       - vim
     state: present
-    
