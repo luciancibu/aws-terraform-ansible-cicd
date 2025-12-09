@@ -46,6 +46,7 @@ resource "local_file" "ansible_inventory" {
 
   content = templatefile("${path.module}/inventory.tmpl", {
     nginx_ip   = aws_instance.nginx_ec2.private_ip
+    nginx_public_ip   = aws_instance.nginx_ec2.public_ip
     python_ip  = aws_instance.python_api.private_ip
     mariadb_ip = aws_instance.mariadb.private_ip
 
