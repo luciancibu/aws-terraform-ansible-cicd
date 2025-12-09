@@ -23,12 +23,6 @@ resource "aws_instance" "ansible_ec2" {
   }
 }
 
-data "archive_file" "ansible_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/../ansible"
-  output_path = "${path.module}/ansible.zip"
-}
-
 resource "aws_ec2_instance_state" "ansible_ec2-state" {
   instance_id = aws_instance.ansible_ec2.id
   state       = "running"
