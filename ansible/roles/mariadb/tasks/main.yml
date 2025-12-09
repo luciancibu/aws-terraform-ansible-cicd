@@ -12,3 +12,32 @@
       - vim
     state: present
     update_cache: yes    
+
+- name: Start MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Allow external access
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/50-server.cnf
+    regexp: '^bind-address'
+    line: 'bind-address = 0.0.0.0'
+
+- name: Restart MariaDB
+  service:
+    name: mariadb
+    state: restarted
+
+- name: Create database and user
+  shell: |
+    mysql -e "
+    CREATE DATABASE IF NOT EXISTS {{ db_name }};
+    CREATE USER IF NOT EXISTS '{{ db_user }}'@'%' IDENTIFIED BY '{{ db_pass }}';
+    GRANT ALL PRIVILEGES ON {{ db_name }}.* TO '{{ db_user }}'@'%';
+    FLUSH PRIVILEGES;
+    USE {{ db_name }};
+    CREATE TABLE IF NOT EXISTS counter (id INT PRIMARY KEY, views INT);
+    INSERT IGNORE INTO counter VALUES (1,0);
+    "
