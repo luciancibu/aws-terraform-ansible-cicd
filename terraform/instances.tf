@@ -9,6 +9,8 @@ resource "aws_instance" "ansible_ec2" {
   key_name               = aws_key_pair.client_keypair.key_name
   vpc_security_group_ids = [aws_security_group.ansible_sg.id]
   availability_zone      = var.zone
+  iam_instance_profile = aws_iam_instance_profile.ec2_ssm_instance_profile.name
+
   
   root_block_device {
   volume_size = 30     
@@ -21,8 +23,9 @@ resource "aws_instance" "ansible_ec2" {
   set -xe
 
   dnf update -y
-  dnf install -y tree nano vim git zip unzip python3 python3-pip
+  dnf install -y amazon-ssm-agent tree nano vim git zip unzip python3 python3-pip
   pip3 install --no-cache-dir ansible
+  sudo systemctl start amazon-ssm-agent
 
   EOF
 
