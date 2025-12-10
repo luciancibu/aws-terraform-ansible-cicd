@@ -10,7 +10,7 @@ variable "zone" {
   default = "us-east-1a"
 }
 
-variable "my_ip" {
+variable "myIP" {
   default = "188.24.56.231"
 }
 
@@ -18,11 +18,16 @@ variable "instanceType" {
   default = "t3.micro"
 }
 
-variable "ansible_user_by_os" {
+variable "ansibleUserByOS" {
   type        = map(string)
   default = {
     ubuntu       = "ubuntu"
     debian       = "admin"
     redhat       = "ec2-user"
+    amazonlinux  = "ec2-user"
   }
+}
+
+variable "deployName" {
+  default = "deployment_script.sh"
 }

@@ -50,11 +50,38 @@ resource "local_file" "ansible_inventory" {
     python_ip  = aws_instance.python_api.private_ip
     mariadb_ip = aws_instance.mariadb.private_ip
 
-    nginx_user   = var.ansible_user_by_os[aws_instance.nginx_ec2.tags.os]
-    python_user  = var.ansible_user_by_os[aws_instance.python_api.tags.os]
-    mariadb_user = var.ansible_user_by_os[aws_instance.mariadb.tags.os]    
+    nginx_user   = var.ansibleUserByOS[aws_instance.nginx_ec2.tags.os]
+    python_user  = var.ansibleUserByOS[aws_instance.python_api.tags.os]
+    mariadb_user = var.ansibleUserByOS[aws_instance.mariadb.tags.os]    
 
     clientkey  = aws_key_pair.client_keypair.key_name
   })
+}
+
+# Deployment script for Ansible
+resource "local_file" "ansible_deployment" {
+  filename = "../${var.deployName}"
+
+  content = templatefile("${path.module}/deploy.tmpl", {
+    ansible_ip       = aws_instance.ansible_ec2.public_ip
+    ansible_user     = var.ansibleUserByOS[aws_instance.ansible_ec2.tags.os]
+    clientkey        = "${aws_key_pair.client_keypair.key_name}.pem"
+  })
+}
+
+# Run deployment script
+resource "null_resource" "run_deploy_script" {
+  depends_on = [
+    aws_instance.nginx_ec2,
+    aws_instance.python_api,
+    aws_instance.mariadb,
+    local_file.ansible_deployment
+  ]
+
+  provisioner "local-exec" {
+    working_dir = "${path.module}/.."
+    command = "bash ./deployment_script.sh"
+  }
+
 }
 

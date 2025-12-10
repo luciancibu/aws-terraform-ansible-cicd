@@ -76,6 +76,22 @@ Once Terraform finishes, you must:
 
 ------------------------------------------------------------------------
 
+Automated Deployment Script (`deploy.sh`)
+
+Terraform automatically generates the deployment script using the `deploy.tmpl` template.  
+The rendered script, **`deploy.sh`**, is written to the root of the project.
+
+After the infrastructure is created, Terraform automatically executes the generated script using a `local-exec` provisioner.  
+This means the entire Ansible deployment process runs **without requiring manual execution**.
+
+### When the script is generated and executed
+
+The script is created and executed as part of:
+
+terraform apply 
+
+------------------------------------------------------------------------
+
 Manual Ansible Execution (Alternative)
 
     cd ansible

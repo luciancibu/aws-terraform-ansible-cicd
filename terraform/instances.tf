@@ -6,7 +6,7 @@
 resource "aws_instance" "ansible_ec2" {
   ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = var.instanceType
-  key_name               = aws_key_pair.key_pairs_ansible.key_name
+  key_name               = aws_key_pair.client_keypair.key_name
   vpc_security_group_ids = [aws_security_group.ansible_sg.id]
   availability_zone      = var.zone
   

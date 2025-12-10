@@ -1,12 +1,6 @@
 # Documentation References:
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
 
-# Control
-resource "aws_key_pair" "key_pairs_ansible" {
-  key_name   = "${var.projectName}_keypair"
-  public_key = file("C:/Users/Luci/.ssh/id_rsa.pub")
-}
-
 # Client
 resource "tls_private_key" "client_key" {
   algorithm = "RSA"
