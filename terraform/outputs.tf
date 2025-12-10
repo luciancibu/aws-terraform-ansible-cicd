@@ -82,5 +82,17 @@ resource "null_resource" "run_deploy_script" {
     working_dir = "${path.module}/.."
     command = "bash ./deployment_script.sh"
   }
-
 }
+
+# GitHub access keys
+# Run "terraform output github_access_key_id" from terminator to see the key
+output "github_access_key_id" {
+  value = aws_iam_access_key.GitHubActions.id
+}
+
+# Run "terraform output github_secret_access_key" from terminator to see the key
+output "github_secret_access_key" {
+  value     = aws_iam_access_key.GitHubActions.secret    
+  sensitive = true  
+}
+
