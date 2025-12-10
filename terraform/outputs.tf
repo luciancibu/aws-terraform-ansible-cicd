@@ -84,4 +84,3 @@ resource "null_resource" "run_deploy_script" {
   }
 
 }
-

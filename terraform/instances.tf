@@ -78,7 +78,6 @@ resource "aws_ec2_instance_state" "ansible_python_api-state" {
   state       = "running"
 }
 
-
 # MariaDB
 resource "aws_instance" "mariadb" {
   ami                    = data.aws_ami.ubuntu_24_04.id
@@ -98,6 +97,3 @@ resource "aws_ec2_instance_state" "mariadb-state" {
   instance_id = aws_instance.mariadb.id
   state       = "running"
 }
-
-
-
