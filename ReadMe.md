@@ -38,6 +38,7 @@ Project Structure
     │
     └── terraform/
         ├── ami.tf
+        ├── deployment.tmpl
         ├── instances.tf
         ├── inventory.tmpl
         ├── keypair.tf
