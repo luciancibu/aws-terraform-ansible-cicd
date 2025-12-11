@@ -3,7 +3,7 @@
 
 # IAM user dor GitHub Actions
 resource "aws_iam_user" "GitHubActions" {
-  name = "GitHubActionsUser"
+  name = "${var.projectName}-GitHubActionsUser"
 
   tags = {
     Name    = "${var.projectName}-user-GitHubActions"
@@ -12,30 +12,46 @@ resource "aws_iam_user" "GitHubActions" {
 }
 
 data "aws_iam_policy_document" "GitHubActions_ro" {
+
   statement {
-    effect    = "Allow"
+    effect = "Allow"
     actions = [
-    "ec2:DescribeInstances",
-    "ec2:DescribeTags",
-    "ec2:DescribeInstanceStatus"
+      "ec2:DescribeInstances",
+      "ec2:DescribeTags",
+      "ec2:DescribeInstanceStatus"
     ]
     resources = ["*"]
   }
+
   statement {
-    effect    = "Allow"
+    effect = "Allow"
     actions = [
-    "ssm:SendCommand",
-    "ssm:GetCommandInvocation",
-    "ssm:ListCommands",
-    "ssm:ListCommandInvocations",
-    "ssm:DescribeInstanceInformation"
+      "ssm:SendCommand",
+      "ssm:GetCommandInvocation",
+      "ssm:ListCommands",
+      "ssm:ListCommandInvocations",
+      "ssm:DescribeInstanceInformation"
     ]
     resources = ["*"]
-  }  
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.ansible_deploy.arn,
+      "${aws_s3_bucket.ansible_deploy.arn}/*"
+    ]
+  }
 }
 
+
 resource "aws_iam_user_policy" "GitHubActions_ro" {
-  name   = "test"
+  name   = "${var.projectName}-test"
   user   = aws_iam_user.GitHubActions.name
   policy = data.aws_iam_policy_document.GitHubActions_ro.json
 }
@@ -63,6 +79,11 @@ resource "aws_iam_role" "ec2_ssm_role" {
 resource "aws_iam_role_policy_attachment" "ec2_ssm_role_attach" {
   role       = aws_iam_role.ec2_ssm_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "s3_read" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 resource "aws_iam_instance_profile" "ec2_ssm_instance_profile" {

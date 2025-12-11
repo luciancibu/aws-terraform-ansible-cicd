@@ -1,0 +1,50 @@
+name: Deploy Ansible
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  EC2_INSTANCE_ID: "i-0d8d9c3d796febe43"
+  S3_BUCKET: "ansible-cicd-deploy-319f1547"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Compress ansible folder
+        run: tar -czf ansible.tar.gz ansible
+
+      - name: Upload to S3
+        run: aws s3 cp ansible.tar.gz s3://${{ env.S3_BUCKET }}/ansible.tar.gz
+
+      - name: Deploy to EC2 via SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ env.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Ansible" \
+            --parameters 'commands=[
+              "cd /home/ec2-user/",
+              "aws s3 cp s3://${{ env.S3_BUCKET }}/ansible.tar.gz ansible.tar.gz",
+              "tar --exclude=\"ansible/inventory\" --exclude=\"ansible/ansible_cicd_client-key.pem\" -xzf ansible.tar.gz -C /home/ec2-user/",
+              "cd ansible",
+              "ansible-playbook playbook.yml"
+            ]' \
+            --output text
+
+
+

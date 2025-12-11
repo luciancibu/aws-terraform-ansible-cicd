@@ -55,6 +55,12 @@ resource "local_file" "ansible_inventory" {
     mariadb_user = var.ansibleUserByOS[aws_instance.mariadb.tags.os]    
 
     clientkey  = aws_key_pair.client_keypair.key_name
+    
+    depends_on = [
+    aws_instance.nginx_ec2,
+    aws_instance.python_api,
+    aws_instance.mariadb
+  ]
   })
 }
 
@@ -85,14 +91,20 @@ resource "null_resource" "run_deploy_script" {
 }
 
 # GitHub access keys
-# Run "terraform output github_access_key_id" from terminator to see the key
 output "github_access_key_id" {
   value = aws_iam_access_key.GitHubActions.id
 }
 
-# Run "terraform output github_secret_access_key" from terminator to see the key
 output "github_secret_access_key" {
   value     = aws_iam_access_key.GitHubActions.secret    
   sensitive = true  
 }
+# Ansible EC2 instance ID
+output "ansible_ec2_id" {
+  value = aws_instance.ansible_ec2.id
+}
 
+# S3 bucket ID
+output "s3_bucket__id" {
+  value = aws_s3_bucket.ansible_deploy.id
+}
