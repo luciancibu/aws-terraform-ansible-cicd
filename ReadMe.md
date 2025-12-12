@@ -44,8 +44,6 @@ Project Structure
         ├── outputs.tf
         ├── provider.tf
         ├── security.tf
-        ├── terraform.tfstate
-        ├── terraform.tfstate.backup
         └── variables.tf
 
 ------------------------------------------------------------------------
