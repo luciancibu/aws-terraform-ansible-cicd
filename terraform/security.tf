@@ -51,7 +51,7 @@ resource "aws_security_group" "nginx_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
+    security_groups = [aws_security_group.ansible_sg.id]
   }
 
   egress {
@@ -79,7 +79,7 @@ resource "aws_security_group" "python_sg" {
     from_port       = 5000
     to_port         = 5000
     protocol        = "tcp"
-    cidr_blocks = ["${aws_instance.nginx_ec2.private_ip}/32"]
+    security_groups = [aws_security_group.nginx_sg.id]
   }
   
   ingress {
@@ -87,7 +87,7 @@ resource "aws_security_group" "python_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
+    security_groups = [aws_security_group.ansible_sg.id]
   }  
 
   egress {
@@ -115,7 +115,7 @@ resource "aws_security_group" "mariadb_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    cidr_blocks = ["${aws_instance.python_api.private_ip}/32"]
+    security_groups = [aws_security_group.python_sg.id]
   }
 
   ingress {
@@ -123,7 +123,10 @@ resource "aws_security_group" "mariadb_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${aws_instance.ansible_ec2.private_ip}/32"]
+    cidr_blocks = [
+      aws_security_group.python_sg.id,
+      aws_security_group.ansible_sg.id
+      ]
   }
 
   egress {
