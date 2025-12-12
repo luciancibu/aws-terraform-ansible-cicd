@@ -15,7 +15,6 @@ Project Structure
     ├── ansible/
     │   ├── ansible.cfg
     │   ├── ansible.log
-    │   ├── ansible_cicd_client-key.pem
     │   ├── inventory
     │   ├── playbook.yml
     │   │
