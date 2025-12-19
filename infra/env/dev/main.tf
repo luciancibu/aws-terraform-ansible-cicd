@@ -79,6 +79,19 @@ module "keypair" {
   output_path = "${path.root}/../../../ansible"
 }
 
+module "s3_ansible" {
+  source = "../../modules/s3"
+
+  project_name = var.projectName
+}
+
+module "iam" {
+  source = "../../modules/iam"
+
+  project_name       = var.projectName
+  ansible_bucket_arn = module.s3_ansible.bucket_arn
+}
+
 
 # Instances
 module "ansible_ec2" {
@@ -92,7 +105,7 @@ module "ansible_ec2" {
   key_name              = module.keypair.key_name
   vpc_security_group_ids = [module.ansible_sg.id]
   availability_zone     = var.zone
-  # iam_instance_profile  = aws_iam_instance_profile.ec2_ssm_instance_profile.name
+  iam_instance_profile = module.iam.ec2_instance_profile_name
 
   root_block_device = {
     volume_size           = 30
