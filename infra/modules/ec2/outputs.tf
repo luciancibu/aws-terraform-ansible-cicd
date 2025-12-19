@@ -9,3 +9,7 @@ output "private_ip" {
 output "id" {
   value = aws_instance.this.id
 }
+
+output "os" {
+  value       = var.os
+}

@@ -163,3 +163,19 @@ module "mariadb_ec2" {
   root_block_device = null
   user_data         = null
 }
+
+resource "local_file" "ansible_inventory" {
+  filename = "${local.ansible_dir}/inventory"
+
+content = templatefile("${path.root}/../../templates/inventory.tmpl", {
+  nginx_ip   = module.nginx_ec2.private_ip
+  python_ip  = module.python_ec2.private_ip
+  mariadb_ip = module.mariadb_ec2.private_ip
+
+  nginx_user   = var.ansibleUserByOS[module.nginx_ec2.os]
+  python_user  = var.ansibleUserByOS[module.python_ec2.os]
+  mariadb_user = var.ansibleUserByOS[module.mariadb_ec2.os]
+
+  clientkey = module.keypair.key_name
+})
+}
