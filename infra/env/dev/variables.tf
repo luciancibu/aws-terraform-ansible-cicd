@@ -6,3 +6,13 @@ variable "aws_region" {
 variable "zone" {
   type = string
 }
+
+variable "projectName" {
+  type = string
+}
+
+variable "instanceType" {
+  type = string
+}
+
+

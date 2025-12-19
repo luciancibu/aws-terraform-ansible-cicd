@@ -1,4 +1,4 @@
-
+# Security Groups
 data "aws_vpc" "default_vpc" {
   default = true
 }
@@ -69,4 +69,84 @@ module "mariadb_sg" {
       security_group_ids = [module.python_sg.id]
     }
   ]
+}
+
+# Keypair
+module "keypair" {
+  source = "../../modules/keypair"
+
+  project_name = var.projectName
+  output_path = "${path.root}/../../../ansible"
+}
+
+
+# Instances
+module "ansible_ec2" {
+  source = "../../modules/ec2"
+
+  name                  = var.projectName
+  project               = var.projectName
+  os                    = "amazonlinux"
+  ami_id                = data.aws_ami.amazon_linux_2023.id
+  instance_type         = var.instanceType
+  key_name              = module.keypair.key_name
+  vpc_security_group_ids = [module.ansible_sg.id]
+  availability_zone     = var.zone
+  # iam_instance_profile  = aws_iam_instance_profile.ec2_ssm_instance_profile.name
+
+  root_block_device = {
+    volume_size           = 30
+    volume_type           = "gp3"
+    delete_on_termination = true
+  }
+
+  user_data = file("${path.module}/../../modules/user-data/ansible.sh")
+}
+
+module "nginx_ec2" {
+  source = "../../modules/ec2"
+
+  name                  = "${var.projectName}-nginx"
+  project               = var.projectName
+  os                    = "redhat"
+  ami_id                = data.aws_ami.redhat_rhel8.id
+  instance_type         = var.instanceType
+  key_name              = module.keypair.key_name
+  vpc_security_group_ids = [module.nginx_sg.id]
+  availability_zone     = var.zone
+
+  root_block_device = null
+  user_data         = null
+}
+
+module "python_ec2" {
+  source = "../../modules/ec2"
+
+  name                  = "${var.projectName}-python"
+  project               = var.projectName
+  os                    = "debian"
+  ami_id                = data.aws_ami.debian_12.id
+  instance_type         = var.instanceType
+  key_name              = module.keypair.key_name
+  vpc_security_group_ids = [module.python_sg.id]
+  availability_zone     = var.zone
+
+  root_block_device = null
+  user_data         = null
+}
+
+module "mariadb_ec2" {
+  source = "../../modules/ec2"
+
+  name                  = "${var.projectName}-mariadb"
+  project               = var.projectName
+  os                    = "ubuntu"
+  ami_id                = data.aws_ami.ubuntu_24_04.id
+  instance_type         = var.instanceType
+  key_name              = module.keypair.key_name
+  vpc_security_group_ids = [module.mariadb_sg.id]
+  availability_zone     = var.zone
+
+  root_block_device = null
+  user_data         = null
 }
